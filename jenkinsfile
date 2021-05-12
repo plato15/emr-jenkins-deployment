@@ -1,0 +1,23 @@
+pipeline {
+    agent any 
+    environment {
+        GITHUB_TOKEN = credentials('GABE_GITHUB_TOKEN_TEST')
+    }
+    stages {
+        stage('Build') {
+            steps { 
+                    
+            }
+        }
+        stage('Test') {
+            steps {
+
+            }
+        }
+        stage('Deploy') {
+            steps {
+
+            }
+        }
+    }
+}
