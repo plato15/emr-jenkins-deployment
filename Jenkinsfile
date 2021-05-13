@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps { 
-                sh 'aws cloudformation create-stack --stack-name myteststack --template-body ./cloudformation/emr-jenkins.yml'
+                sh 'aws cloudformation create-stack --stack-name myteststack --template-body ./cloudformation/emr-jenkins.yml --region us-east-1'
             }
         }
         stage('Test') {
