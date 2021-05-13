@@ -1,0 +1,84 @@
+
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+    InstanceType:
+        Type: String
+        Default: m5.xlarge
+    ReleaseLabel:
+        Type: String
+        Default: emr-5.29.0
+    SubnetId:
+        Type: AWS::EC2::Subnet::Id
+    EbsRootVolumeSize:
+        Type: String
+        Default: 100
+    KeyName:
+        Type: String
+Resources:
+    cluster:
+        Type: AWS::EMR::Cluster
+        Properties:
+            EbsRootVolumeSize: !Ref EbsRootVolumeSize
+            Instances: 
+                MasterInstanceGroup:
+                    InstanceCount: 1
+                    InstanceType: !Ref InstanceType
+                    Market: ON_DEMAND
+                    Name: cfnMaster
+                CoreInstanceGroup:
+                    InstanceCount: 1
+                    InstanceType: !Ref InstanceType
+                    Market: ON_DEMAND
+                    Name: cfnCore
+                Ec2SubnetId: !Ref SubnetId
+                Ec2KeyName: !Ref KeyName
+            Name: CFNtest
+            JobFlowRole: !Ref emrEc2InstanceProfile
+            ServiceRole: !Ref emrRole
+            ReleaseLabel: !Ref ReleaseLabel
+            VisibleToAllUsers: true
+            Tags:
+            - Key: key1
+              Value: value1
+            
+    emrRole:
+        Type: AWS::IAM::Role
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2008-10-17
+                Statement:
+                  - Sid: ''
+                    Effect: Allow
+                    Principal:
+                        Service: elasticmapreduce.amazonaws.com
+                    Action: 'sts:AssumeRole'
+            Path: /
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceRole'
+    emrEc2Role:
+        Type: AWS::IAM::Role
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2008-10-17
+                Statement:
+                  - Sid: ''
+                    Effect: Allow
+                    Principal:
+                      Service: ec2.amazonaws.com
+                    Action: 'sts:AssumeRole'
+            Path: /
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/service-role/AmazonElasticMapReduceforEC2Role'
+    emrEc2InstanceProfile:
+        Type: AWS::IAM::InstanceProfile
+        Properties:
+            Path: /
+            Roles:
+            - !Ref emrEc2Role
+
+    S3Bucket:
+      Type: 'AWS::S3::Bucket'
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: 'sales-db-plato'
