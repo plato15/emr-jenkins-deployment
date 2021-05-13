@@ -1,0 +1,67 @@
+
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+    EnvironmentName:
+      Description: An environment name that is prefixed to resource names
+      Type: String
+      Default: Mainpage
+    KeyName:
+      Description: specify the name of an exsiting keypair for your server
+      Type: String
+      Default: jenkins_kp
+
+    InstanceType:
+      Description: specify the type of instance
+      Type: String
+      Default: t2.micro
+
+    ImageID:
+      Description: This is the image ID of your ubuntu server
+      Type: String
+      Default: ami-042e8287309f5df03
+
+
+Resources:
+    UbuntuInstance:
+      Type: AWS::EC2::Instance
+      Properties:
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile: !Ref jenkinsEc2InstanceProfile
+        ImageId: !Ref ImageID
+        KeyName: !Ref KeyName
+        Tags:
+          - Key: Name
+            Value: jenkins-Web-Server
+        UserData:
+          Fn::Base64:
+            !Sub |
+            #!/bin/bash -xe
+            sudo apt update
+            sudo apt install -y openjdk-8-jdk
+            wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+            sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+            sudo apt update
+            sudo apt install -y jenkins
+            sudo systemctl start jenkins
+            sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+    jenkinsEc2Role:
+        Type: AWS::IAM::Role
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2008-10-17
+                Statement:
+                  - Sid: ''
+                    Effect: Allow
+                    Principal:
+                      Service: ec2.amazonaws.com
+                    Action: 'sts:AssumeRole'
+            Path: /
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/AWSCloudFormationFullAccess'
+    jenkinsEc2InstanceProfile:
+        Type: AWS::IAM::InstanceProfile
+        Properties:
+            Path: /
+            Roles:
+            - !Ref jenkinsEc2Role
