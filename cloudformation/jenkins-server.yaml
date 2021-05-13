@@ -8,7 +8,7 @@ Parameters:
     KeyName:
       Description: specify the name of an exsiting keypair for your server
       Type: String
-      Default: jenkins_kp
+      Default: mykp
 
     InstanceType:
       Description: specify the type of instance
@@ -18,7 +18,7 @@ Parameters:
     ImageID:
       Description: This is the image ID of your ubuntu server
       Type: String
-      Default: ami-042e8287309f5df03
+      Default: ami-03d5c68bab01f3496
 
 
 Resources:
