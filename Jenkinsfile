@@ -2,6 +2,7 @@ pipeline {
     agent any 
     environment {
         GITHUB_TOKEN = "Nothing"
+    }
     stages {
         stage('Build') {
             steps { 
@@ -19,5 +20,4 @@ pipeline {
             }
         }
     }
-}
 }
