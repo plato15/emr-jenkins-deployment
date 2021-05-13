@@ -9,12 +9,14 @@ Parameters:
         Type: String
         Default: emr-5.29.0
     SubnetId:
-        Type: AWS::EC2::Subnet::Id
+        Type: String
+        Default: subnet-aee364d6
     EbsRootVolumeSize:
         Type: String
         Default: 100
     KeyName:
         Type: String
+        Default: mykp
 Resources:
     cluster:
         Type: AWS::EMR::Cluster
