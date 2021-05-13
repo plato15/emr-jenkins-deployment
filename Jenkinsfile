@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps { 
-                sh 'aws cloudformation create-stack --stack-name myteststack --template-body ./cloudformation/emr-jenkins.yml --parameter-overrides $(cat ./cloudformation/parameters/emr.ini)'
+                sh 'aws cloudformation create-stack --stack-name myteststack --template-body ./cloudformation/emr-jenkins.yml'
             }
         }
         stage('Test') {
