@@ -1,8 +1,7 @@
 pipeline {
     agent any 
     environment {
-        GITHUB_TOKEN = credentials('GABE_GITHUB_TOKEN_TEST')
-    }
+        GITHUB_TOKEN = "Nothing"
     stages {
         stage('Build') {
             steps { 
